@@ -1,45 +1,38 @@
-# Mobil Proje
+# Mini Katalog Uygulamasi
 
-Flutter ile hazirlanmis mobil uygulama proje iskeleti.
-
-## Kullanilan Teknolojiler
-
-- Flutter SDK
-- Dart SDK
-- Material Design
-- Harici paket kullanilmamistir.
+Mini Katalog Uygulamasi, Flutter ile gelistirilmis basit bir urun katalog uygulamasidir. Kullanici urunleri listeleyebilir, urun detaylarini inceleyebilir ve urunleri sepete ekleyebilir.
 
 ## Kullanilan Flutter Surumu
-
-```bash
-Flutter 3.x.x
-Dart SDK: Flutter SDK ile gelen surum
-```
-
-Bu ortamda dogrulanan surum:
 
 ```bash
 Flutter 3.44.2
 Dart 3.12.2
 ```
 
-## Proje Klasor Yapisi
+## Calistirma Adimlari
+
+1. Repository'yi bilgisayara klonlayin:
 
 ```bash
-lib/
-|-- main.dart
-|-- models/
-|   `-- product_model.dart
-|-- data/
-|   `-- mock_data.dart
-`-- screens/
-    |-- home_screen.dart
-    `-- detail_screen.dart
+git clone <github-repository-url>
 ```
 
-## Calistirma
+2. Proje klasorune girin:
+
+```bash
+cd mini_katalog_uygulamasi
+```
+
+3. Flutter bagimliliklarini yukleyin:
 
 ```bash
 flutter pub get
+```
+
+4. Android Emulator veya fiziksel cihazi calistirin.
+
+5. Uygulamayi baslatin:
+
+```bash
 flutter run
 ```

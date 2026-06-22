@@ -1,60 +1,45 @@
 import 'package:flutter/material.dart';
 
+import '../data/cart_data.dart';
 import '../models/product_model.dart';
+import '../widgets/cart_action_button.dart';
+import 'cart_screen.dart';
 
-/// Ürün detay sayfası.
-///
-/// StatefulWidget kullanılmasının sebebi:
-/// - Sepete ekleme sayısını ekranda güncellemek.
-/// - AppBar üzerindeki sepet ikonunda sayıyı artırmak.
-class DetailScreen extends StatefulWidget {
+class DetailScreen extends StatelessWidget {
   const DetailScreen({super.key});
 
   static const String routeName = '/detail';
 
-  @override
-  State<DetailScreen> createState() => _DetailScreenState();
-}
-
-class _DetailScreenState extends State<DetailScreen> {
-  int _cartCount = 0;
-
-  /// Sepete ekle butonuna basıldığında çalışır.
-  ///
-  /// setState ile ekrandaki sepet sayısı güncellenir.
-  void _addToCart() {
-    setState(() {
-      _cartCount++;
-    });
+  void _addToCart(BuildContext context, Product product) {
+    cartStore.addProduct(product);
 
     ScaffoldMessenger.of(context).clearSnackBars();
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          'Sepete eklendi! Sepette $_cartCount ürün var.',
-        ),
+        content: const Text('Ürün sepete eklendi.'),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
+        action: SnackBarAction(
+          label: 'Sepete Git',
+          onPressed: () {
+            Navigator.pushNamed(context, CartScreen.routeName);
+          },
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    /// HomeScreen içinden arguments ile gönderilen veri burada alınır.
     final Object? arguments = ModalRoute.of(context)?.settings.arguments;
 
-    /// Eğer detay sayfası yanlışlıkla arguments olmadan açılırsa
-    /// uygulama çökmesin diye güvenli bir hata ekranı gösterilir.
     if (arguments is! Product) {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Ürün Detayı'),
+          actions: const [CartActionButton()],
         ),
-        body: const Center(
-          child: Text('Ürün bilgisi bulunamadı.'),
-        ),
+        body: const Center(child: Text('Ürün bilgisi bulunamadı.')),
       );
     }
 
@@ -63,21 +48,16 @@ class _DetailScreenState extends State<DetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ürün Detayı'),
-        actions: [
-          _CartIcon(count: _cartCount),
-        ],
+        actions: const [CartActionButton()],
       ),
-
-      /// Sayfanın altında sabit duran sepete ekle butonu.
       bottomNavigationBar: SafeArea(
         minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
         child: ElevatedButton.icon(
-          onPressed: _addToCart,
+          onPressed: () => _addToCart(context, product),
           icon: const Icon(Icons.add_shopping_cart),
           label: const Text('Sepete Ekle'),
         ),
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 24),
         child: Column(
@@ -92,61 +72,10 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 }
 
-/// AppBar üzerindeki sepet ikonunu ve sayaç rozetini gösterir.
-class _CartIcon extends StatelessWidget {
-  final int count;
-
-  const _CartIcon({
-    required this.count,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 18),
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          const Icon(Icons.shopping_cart_outlined),
-
-          /// Sepette ürün yoksa rozet gösterilmez.
-          if (count > 0)
-            Positioned(
-              right: -8,
-              top: 8,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 6,
-                  vertical: 2,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF0A36D9),
-                  borderRadius: BorderRadius.circular(99),
-                ),
-                child: Text(
-                  count.toString(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Detay sayfasındaki büyük ürün görseli.
 class _ProductImage extends StatelessWidget {
-  final Product product;
+  const _ProductImage({required this.product});
 
-  const _ProductImage({
-    required this.product,
-  });
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +88,7 @@ class _ProductImage extends StatelessWidget {
         borderRadius: BorderRadius.circular(26),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
@@ -183,13 +112,10 @@ class _ProductImage extends StatelessWidget {
   }
 }
 
-/// Detay sayfasındaki başlık, kategori, açıklama ve fiyat alanı.
 class _ProductInfo extends StatelessWidget {
-  final Product product;
+  const _ProductInfo({required this.product});
 
-  const _ProductInfo({
-    required this.product,
-  });
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +131,6 @@ class _ProductInfo extends StatelessWidget {
         children: [
           _CategoryChip(category: product.category),
           const SizedBox(height: 14),
-
           Text(
             product.title,
             style: const TextStyle(
@@ -215,9 +140,7 @@ class _ProductInfo extends StatelessWidget {
               height: 1.15,
             ),
           ),
-
           const SizedBox(height: 16),
-
           const Text(
             'Açıklama',
             style: TextStyle(
@@ -226,9 +149,7 @@ class _ProductInfo extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-
           const SizedBox(height: 8),
-
           Text(
             product.description,
             style: const TextStyle(
@@ -237,9 +158,7 @@ class _ProductInfo extends StatelessWidget {
               height: 1.5,
             ),
           ),
-
           const SizedBox(height: 22),
-
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
@@ -275,23 +194,17 @@ class _ProductInfo extends StatelessWidget {
   }
 }
 
-/// Ürün kategorisini küçük bir etiket olarak gösterir.
 class _CategoryChip extends StatelessWidget {
-  final String category;
+  const _CategoryChip({required this.category});
 
-  const _CategoryChip({
-    required this.category,
-  });
+  final String category;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
-        color: const Color(0xFF0A36D9).withOpacity(0.10),
+        color: const Color(0xFF0A36D9).withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(99),
       ),
       child: Text(

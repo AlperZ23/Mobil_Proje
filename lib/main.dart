@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'screens/cart_screen.dart';
 import 'screens/detail_screen.dart';
 import 'screens/home_screen.dart';
 
@@ -25,9 +26,7 @@ class MiniCatalogApp extends StatelessWidget {
         useMaterial3: true,
 
         /// Ana renk şeması.
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF0A36D9),
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0A36D9)),
 
         /// Sayfa arka plan rengi.
         scaffoldBackgroundColor: const Color(0xFFF6F7FB),
@@ -72,6 +71,7 @@ class MiniCatalogApp extends StatelessWidget {
       routes: {
         HomeScreen.routeName: (context) => const HomeScreen(),
         DetailScreen.routeName: (context) => const DetailScreen(),
+        CartScreen.routeName: (context) => const CartScreen(),
       },
     );
   }

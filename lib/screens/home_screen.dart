@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/mock_data.dart';
 import '../models/product_model.dart';
+import '../widgets/cart_action_button.dart';
 import 'detail_screen.dart';
 
 /// Uygulamanın ana ekranı.
@@ -22,12 +23,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mini Katalog'),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Icon(Icons.shopping_bag_outlined),
-          ),
-        ],
+        actions: const [CartActionButton()],
       ),
       body: SafeArea(
         child: Column(
@@ -157,21 +153,16 @@ class _ProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback onTap;
 
-  const _ProductCard({
-    required this.product,
-    required this.onTap,
-  });
+  const _ProductCard({required this.product, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
       elevation: 2,
-      shadowColor: Colors.black.withOpacity(0.08),
+      shadowColor: Colors.black.withValues(alpha: 0.08),
       clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: InkWell(
         onTap: onTap,
         child: Column(
